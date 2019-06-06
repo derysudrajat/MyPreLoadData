@@ -59,14 +59,26 @@ public class LoadDataAsync extends AsyncTask<Void, Integer, Boolean> {
             boolean isInsertSuccess;
             try {
                 mahasiswaHelper.beginTransaction();
+
                 for (MahasiswaModel model : mahasiswaModels) {
-                    mahasiswaHelper.insertTransaction(model);
-                    progress += progressDiff;
-                    publishProgress((int) progress);
+                    if (isCancelled()) {
+                        break;
+                    } else {
+                        mahasiswaHelper.insertTransaction(model);
+                        progress += progressDiff;
+                        publishProgress((int) progress);
+                    }
                 }
-                mahasiswaHelper.setTransactionSuccess();
-                isInsertSuccess = true;
-                appPreference.setFirstRun(false);
+
+                if (isCancelled()) {
+                    isInsertSuccess = false;
+                    appPreference.setFirstRun(true);
+                    weakCallback.get().onLoadCancel();
+                } else {
+                    mahasiswaHelper.setTransactionSuccess();
+                    isInsertSuccess = true;
+                    appPreference.setFirstRun(false);
+                }
             } catch (Exception e) {
                 Log.e(TAG, "doInBackground: Exception");
                 isInsertSuccess = false;
