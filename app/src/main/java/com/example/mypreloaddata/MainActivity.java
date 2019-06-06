@@ -68,6 +68,11 @@ public class MainActivity extends AppCompatActivity implements HandlerCallback {
         Toast.makeText(this, "GAGAL", Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void loadCancel() {
+        finish();
+    }
+
     private ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
@@ -108,6 +113,9 @@ public class MainActivity extends AppCompatActivity implements HandlerCallback {
                 case FAILED_MESSAGE:
                     weakCallback.get().loadFailed();
                     break;
+                case CANCEL_MESSAGE:
+                    weakCallback.get().loadCancel();
+                    break;
             }
         }
     }
@@ -121,4 +129,6 @@ interface HandlerCallback {
     void loadSuccess();
 
     void loadFailed();
+
+    void loadCancel();
 }
