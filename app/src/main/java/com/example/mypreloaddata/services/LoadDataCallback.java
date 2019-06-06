@@ -5,4 +5,5 @@ public interface LoadDataCallback {
     void onProgressUpdate(long progress);
     void onLoadSuccess();
     void onLoadFailed();
+    void onLoadCancel();
 }
